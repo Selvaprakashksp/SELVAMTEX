@@ -38,65 +38,85 @@
             <span id="userId" class="font-mono text-xs md:text-sm">Loading...</span>
         </div>
 
-        <!-- Time Entry Form -->
-        <form id="timeForm" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-            <div class="md:col-span-3">
-                <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                <input type="text" id="companyName" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., ABC Logistics">
-            </div>
-            <div>
-                <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
-            </div>
-            <div>
-                <label for="inTime" class="block text-sm font-medium text-gray-700 mb-1">In Time</label>
-                <input type="time" id="inTime" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
-            </div>
-            <div>
-                <label for="outTime" class="block text-sm font-medium text-gray-700 mb-1">Out Time</label>
-                <input type="time" id="outTime" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
-            </div>
-            <div>
-                <label for="bagsIn" class="block text-sm font-medium text-gray-700 mb-1">No. of Bags In</label>
-                <input type="number" id="bagsIn" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., 50">
-            </div>
-            <div>
-                <label for="bagsOut" class="block text-sm font-medium text-gray-700 mb-1">No. of Bags Out</label>
-                <input type="number" id="bagsOut" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., 45">
-            </div>
-            <div>
-                <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Color</label>
-                <input type="text" id="color" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., Blue">
-            </div>
-            <div>
-                <label for="count" class="block text-sm font-medium text-gray-700 mb-1">Count</label>
-                <input type="number" id="count" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., 200">
-            </div>
-            <div>
-                <label for="vehicleNumber" class="block text-sm font-medium text-gray-700 mb-1">Vehicle Number</label>
-                <input type="text" id="vehicleNumber" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., AB-12-CD-3456">
-            </div>
-            <div>
-                <label for="driverPhone" class="block text-sm font-medium text-gray-700 mb-1">Driver Phone Number</label>
-                <input type="tel" id="driverPhone" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., +1234567890">
-            </div>
+        <!-- Tab Buttons -->
+        <div class="flex justify-center mb-6 border-b-2 border-gray-200">
+            <button id="trackerTab" class="w-1/2 py-3 text-center text-sm font-semibold text-blue-600 border-b-2 border-blue-600 transition-colors duration-300">
+                Tracker
+            </button>
+            <button id="summaryTab" class="w-1/2 py-3 text-center text-sm font-semibold text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                Summary
+            </button>
+        </div>
 
-            <div class="md:col-span-3 mt-4 flex justify-between gap-4">
-                <button type="submit" id="saveBtn" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all transform hover:scale-105">
-                    Save Entry
-                </button>
-                <button type="button" id="downloadBtn" class="w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition-all transform hover:scale-105">
-                    Download as Excel
-                </button>
+        <!-- Tracker View -->
+        <div id="trackerContainer" class="transition-opacity duration-300">
+            <!-- Time Entry Form -->
+            <form id="timeForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div class="sm:col-span-2">
+                    <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                    <input type="text" id="companyName" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., ABC Logistics">
+                </div>
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                </div>
+                <div>
+                    <label for="transactionType" class="block text-sm font-medium text-gray-700 mb-1">Transaction Type</label>
+                    <select id="transactionType" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                        <option value="IN">IN</option>
+                        <option value="OUT">OUT</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="bags" class="block text-sm font-medium text-gray-700 mb-1">No. of Bags</label>
+                    <input type="number" id="bags" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., 50">
+                </div>
+                <div>
+                    <label for="time" class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                    <input type="time" id="time" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                </div>
+                <div>
+                    <label for="count" class="block text-sm font-medium text-gray-700 mb-1">Count (Optional)</label>
+                    <input type="number" id="count" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., 200">
+                </div>
+                <div>
+                    <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Color (Optional)</label>
+                    <input type="text" id="color" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., Blue">
+                </div>
+                <div>
+                    <label for="vehicleNumber" class="block text-sm font-medium text-gray-700 mb-1">Vehicle Number (Optional)</label>
+                    <input type="text" id="vehicleNumber" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., AB-12-CD-3456">
+                </div>
+                <div>
+                    <label for="driverPhone" class="block text-sm font-medium text-gray-700 mb-1">Driver Phone Number (Optional)</label>
+                    <input type="tel" id="driverPhone" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., +1234567890">
+                </div>
+
+                <div class="sm:col-span-2 mt-4 flex justify-between gap-4">
+                    <button type="submit" id="saveBtn" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all transform hover:scale-105">
+                        Save Entry
+                    </button>
+                    <button type="button" id="downloadBtn" class="w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition-all transform hover:scale-105">
+                        Download as Excel
+                    </button>
+                </div>
+            </form>
+
+            <div id="statusMessage" class="text-center text-sm font-medium mb-4"></div>
+
+            <!-- Logged Entries List -->
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Your Entries</h2>
+            <div id="entriesList" class="space-y-4">
+                <!-- Entries will be dynamically inserted here -->
             </div>
-        </form>
+        </div>
 
-        <div id="statusMessage" class="text-center text-sm font-medium mb-4"></div>
-
-        <!-- Logged Entries List -->
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Your Entries</h2>
-        <div id="entriesList" class="space-y-4">
-            <!-- Entries will be dynamically inserted here -->
+        <!-- Summary View -->
+        <div id="summaryContainer" class="transition-opacity duration-300 hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Bag Balance Summary</h2>
+            <div id="summaryList" class="space-y-4">
+                <!-- Summary will be dynamically inserted here -->
+            </div>
         </div>
     </div>
 
@@ -107,7 +127,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Set Firebase debug logs
@@ -120,18 +140,22 @@
 
         // HTML element references
         const userIdEl = document.getElementById('userId');
+        const trackerTab = document.getElementById('trackerTab');
+        const summaryTab = document.getElementById('summaryTab');
+        const trackerContainer = document.getElementById('trackerContainer');
+        const summaryContainer = document.getElementById('summaryContainer');
         const timeForm = document.getElementById('timeForm');
         const companyNameInput = document.getElementById('companyName');
         const dateInput = document.getElementById('date');
-        const inTimeInput = document.getElementById('inTime');
-        const outTimeInput = document.getElementById('outTime');
-        const bagsInInput = document.getElementById('bagsIn');
-        const bagsOutInput = document.getElementById('bagsOut');
-        const colorInput = document.getElementById('color');
+        const transactionTypeSelect = document.getElementById('transactionType');
+        const bagsInput = document.getElementById('bags');
+        const timeInput = document.getElementById('time');
         const countInput = document.getElementById('count');
+        const colorInput = document.getElementById('color');
         const vehicleNumberInput = document.getElementById('vehicleNumber');
         const driverPhoneInput = document.getElementById('driverPhone');
         const entriesList = document.getElementById('entriesList');
+        const summaryList = document.getElementById('summaryList');
         const statusMessageEl = document.getElementById('statusMessage');
         const downloadBtn = document.getElementById('downloadBtn');
 
@@ -151,8 +175,7 @@
             const minutes = now.getMinutes().toString().padStart(2, '0');
 
             dateInput.value = `${year}-${month}-${day}`;
-            inTimeInput.value = `${hours}:${minutes}`;
-            outTimeInput.value = `${hours}:${minutes}`;
+            timeInput.value = `${hours}:${minutes}`;
 
             // Check if Firebase config is provided and not empty
             try {
@@ -193,28 +216,66 @@
             }
         };
 
+        // Tab switching logic
+        trackerTab.addEventListener('click', () => {
+            trackerContainer.classList.remove('hidden');
+            summaryContainer.classList.add('hidden');
+            trackerTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            trackerTab.classList.remove('text-gray-500', 'hover:text-blue-600');
+            summaryTab.classList.add('text-gray-500', 'hover:text-blue-600');
+            summaryTab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+        });
+
+        summaryTab.addEventListener('click', () => {
+            summaryContainer.classList.remove('hidden');
+            trackerContainer.classList.add('hidden');
+            summaryTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            summaryTab.classList.remove('text-gray-500', 'hover:text-blue-600');
+            trackerTab.classList.add('text-gray-500', 'hover:text-blue-600');
+            trackerTab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+        });
+
         // Function to listen for real-time updates from Firestore
         function startListeningForEntries(currentUserId) {
-            const collectionPath = `artifacts/${appId}/users/${currentUserId}/daily_entries`;
+            const collectionPath = `artifacts/${appId}/users/${currentUserId}/daily_entries_v2`;
             const userEntriesCollection = collection(db, collectionPath);
             
             // Using onSnapshot to listen for real-time changes
             onSnapshot(userEntriesCollection, (querySnapshot) => {
                 const entries = [];
+                const summaryData = {};
                 querySnapshot.forEach((doc) => {
-                    // Get data and store document ID
-                    entries.push({ id: doc.id, ...doc.data() });
+                    const entryData = { id: doc.id, ...doc.data() };
+                    entries.push(entryData);
+
+                    // Calculate summary data
+                    const company = entryData.companyName;
+                    if (!summaryData[company]) {
+                        summaryData[company] = { in: 0, out: 0, balance: 0 };
+                    }
+                    if (entryData.transactionType === 'IN') {
+                        summaryData[company].in += entryData.bags;
+                    } else if (entryData.transactionType === 'OUT') {
+                        summaryData[company].out += entryData.bags;
+                    }
                 });
+
+                // Calculate balance for each company
+                for (const company in summaryData) {
+                    summaryData[company].balance = summaryData[company].in - summaryData[company].out;
+                }
 
                 // Sort entries by date and time in descending order (most recent first)
                 entries.sort((a, b) => {
-                    const dateA = new Date(`${a.date}T${a.inTime}`);
-                    const dateB = new Date(`${b.date}T${b.inTime}`);
+                    const dateA = new Date(`${a.date}T${a.time}`);
+                    const dateB = new Date(`${b.date}T${b.time}`);
                     return dateB - dateA;
                 });
 
                 currentEntries = entries; // Update the global variable
                 renderEntries(entries);
+                renderSummary(summaryData);
+
             }, (error) => {
                 console.error("Error listening to collection:", error);
                 statusMessageEl.textContent = "Error loading entries. See console.";
@@ -234,35 +295,24 @@
                 const entryEl = document.createElement('div');
                 entryEl.className = "bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center flex-wrap gap-2";
                 
-                // Format times and calculate total time
-                const [inHours, inMinutes] = (entry.inTime || '00:00').split(':').map(Number);
-                const [outHours, outMinutes] = (entry.outTime || '00:00').split(':').map(Number);
-                const totalMinutes = (outHours * 60 + outMinutes) - (inHours * 60 + inMinutes);
-                const totalHours = Math.floor(totalMinutes / 60);
-                const remainingMinutes = totalMinutes % 60;
-                const totalTimeStr = totalMinutes >= 0 ? `${totalHours}h ${remainingMinutes}m` : 'Invalid Time';
+                const transactionType = entry.transactionType || 'N/A';
+                const timeColor = transactionType === 'IN' ? 'text-green-600' : 'text-red-600';
+                const timeLabel = transactionType === 'IN' ? 'IN' : 'OUT';
 
                 entryEl.innerHTML = `
                     <div class="flex-grow">
                         <p class="text-xl font-bold text-gray-800">${entry.companyName || 'N/A'}</p>
                         <p class="text-sm text-gray-600 mb-2">${entry.date || 'N/A'}</p>
                         <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-gray-700">
-                            <div><strong>Bags In:</strong> ${entry.bagsIn || 0}</div>
-                            <div><strong>Bags Out:</strong> ${entry.bagsOut || 0}</div>
+                            <div><strong>Bags:</strong> ${entry.bags || 0}</div>
+                            <div><strong>Count:</strong> ${entry.count || 'N/A'}</div>
                             <div><strong>Color:</strong> ${entry.color || 'N/A'}</div>
-                            <div><strong>Count:</strong> ${entry.count || 0}</div>
                             <div><strong>Vehicle:</strong> ${entry.vehicleNumber || 'N/A'}</div>
                             <div><strong>Driver #:</strong> ${entry.driverPhone || 'N/A'}</div>
                         </div>
                     </div>
                     <div class="flex-shrink-0 flex flex-col items-end sm:items-center">
-                        <p class="text-xs text-gray-500">Total Time</p>
-                        <p class="text-2xl font-bold text-gray-800 mb-2">${totalTimeStr}</p>
-                        <div class="flex gap-2 items-center">
-                            <span class="text-green-600 font-medium text-xs md:text-sm">IN: ${entry.inTime || 'N/A'}</span>
-                            <span class="text-gray-400">|</span>
-                            <span class="text-red-600 font-medium text-xs md:text-sm">OUT: ${entry.outTime || 'N/A'}</span>
-                        </div>
+                        <span class="${timeColor} font-medium text-xs md:text-sm mb-2">${timeLabel}: ${entry.time || 'N/A'}</span>
                         <button class="delete-btn mt-2 text-gray-400 hover:text-red-500 transition-colors" data-id="${entry.id}" title="Delete entry">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 11-2 0v6a1 1 0 112 0V8z" clip-rule="evenodd" />
@@ -282,6 +332,35 @@
             });
         }
 
+        // Function to render the summary on the page
+        function renderSummary(summaryData) {
+            summaryList.innerHTML = '';
+            if (Object.keys(summaryData).length === 0) {
+                summaryList.innerHTML = '<p class="text-center text-gray-500 py-8">No summary data available yet.</p>';
+                return;
+            }
+
+            for (const company in summaryData) {
+                const data = summaryData[company];
+                const balanceColor = data.balance >= 0 ? 'text-green-600' : 'text-red-600';
+                
+                const summaryEl = document.createElement('div');
+                summaryEl.className = "bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-100";
+                summaryEl.innerHTML = `
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">${company}</h3>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-gray-700">
+                        <div><strong>Total IN:</strong> ${data.in} bags</div>
+                        <div><strong>Total OUT:</strong> ${data.out} bags</div>
+                    </div>
+                    <div class="mt-2 text-lg font-bold ${balanceColor}">
+                        Balance: ${data.balance} bags
+                    </div>
+                `;
+                summaryList.appendChild(summaryEl);
+            }
+        }
+
+
         // Function to save a new time entry
         timeForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -292,40 +371,21 @@
                 return;
             }
 
-            // Custom validation for conditional fields
-            const bagsIn = parseInt(bagsInInput.value, 10);
-            const bagsOut = parseInt(bagsOutInput.value, 10);
-            const inTime = inTimeInput.value;
-            const outTime = outTimeInput.value;
-
-            if (bagsIn > 0 && !inTime) {
-                statusMessageEl.textContent = "Please enter an 'In Time' for bags received.";
-                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
-                inTimeInput.focus();
-                return;
-            }
-            if (bagsOut > 0 && !outTime) {
-                statusMessageEl.textContent = "Please enter an 'Out Time' for bags dispatched.";
-                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
-                outTimeInput.focus();
-                return;
-            }
-
+            const transactionType = transactionTypeSelect.value;
             const newEntry = {
                 companyName: companyNameInput.value,
                 date: dateInput.value,
-                inTime: inTimeInput.value,
-                outTime: outTimeInput.value,
-                bagsIn: bagsIn,
-                bagsOut: bagsOut,
-                color: colorInput.value,
-                count: parseInt(countInput.value, 10),
-                vehicleNumber: vehicleNumberInput.value,
-                driverPhone: driverPhoneInput.value,
+                transactionType: transactionType,
+                bags: parseInt(bagsInput.value, 10),
+                time: timeInput.value,
+                count: countInput.value ? parseInt(countInput.value, 10) : null,
+                color: colorInput.value || null,
+                vehicleNumber: vehicleNumberInput.value || null,
+                driverPhone: driverPhoneInput.value || null,
                 timestamp: new Date().toISOString(),
             };
 
-            const collectionPath = `artifacts/${appId}/users/${userId}/daily_entries`;
+            const collectionPath = `artifacts/${appId}/users/${userId}/daily_entries_v2`;
             try {
                 const docRef = await addDoc(collection(db, collectionPath), newEntry);
                 console.log("Document written with ID: ", docRef.id);
@@ -334,10 +394,9 @@
                 
                 // Clear inputs except for date and current time
                 companyNameInput.value = '';
-                bagsInInput.value = '0';
-                bagsOutInput.value = '0';
+                bagsInput.value = '0';
+                countInput.value = '';
                 colorInput.value = '';
-                countInput.value = '0';
                 vehicleNumberInput.value = '';
                 driverPhoneInput.value = '';
 
@@ -349,8 +408,7 @@
                 const hours = now.getHours().toString().padStart(2, '0');
                 const minutes = now.getMinutes().toString().padStart(2, '0');
                 dateInput.value = `${year}-${month}-${day}`;
-                inTimeInput.value = `${hours}:${minutes}`;
-                outTimeInput.value = `${hours}:${minutes}`;
+                timeInput.value = `${hours}:${minutes}`;
 
             } catch (e) {
                 console.error("Error adding document: ", e);
@@ -365,7 +423,7 @@
                 console.error("Cannot delete, user not authenticated.");
                 return;
             }
-            const docPath = `artifacts/${appId}/users/${userId}/daily_entries/${docId}`;
+            const docPath = `artifacts/${appId}/users/${userId}/daily_entries_v2/${docId}`;
             try {
                 await deleteDoc(doc(db, docPath));
                 console.log("Document successfully deleted!");
@@ -387,18 +445,22 @@
             }
 
             // Map data to a new array with desired headers and format
-            const dataToExport = currentEntries.map(entry => ({
-                'DATE': entry.date,
-                'COMPANY NAME': entry.companyName,
-                'NO OF BAGS IN': entry.bagsIn,
-                'NO OF BAGS OUT': entry.bagsOut,
-                'COLOR': entry.color,
-                'COUNT': entry.count,
-                'VEHICLE NUMBER': entry.vehicleNumber,
-                'DRIVER PHONE NUMBER': entry.driverPhone,
-                'IN TIME': entry.inTime,
-                'OUT TIME': entry.outTime,
-            }));
+            const dataToExport = currentEntries.map(entry => {
+                const dateParts = entry.date.split('-');
+                const formattedDate = `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}`;
+
+                return {
+                    'DATE': formattedDate,
+                    'TIME': entry.time,
+                    'COMPANY NAME': entry.companyName,
+                    'IN BAGS': entry.transactionType === 'IN' ? entry.bags : 0,
+                    'OUT BAGS': entry.transactionType === 'OUT' ? entry.bags : 0,
+                    'COUNT': entry.count || '',
+                    'COLOR': entry.color || '',
+                    'VEHICLE NAME': entry.vehicleNumber || '',
+                    'DRIVER NUMBER': entry.driverPhone || '',
+                };
+            });
 
             // Create a new workbook and add a worksheet
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
@@ -417,8 +479,6 @@
         });
 
         // PWA Service Worker Registration
-        // Important: For GitHub Pages, the path must be relative to the root of the repository, not the root of the domain.
-        // We've updated the path to correctly point to the service worker file.
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/daily-tracker/sw.js', { scope: '/daily-tracker/' }).then(registration => {
@@ -431,12 +491,16 @@
     </script>
     <script>
         // A minimal service worker script to enable PWA installation
-        // For a full app, you would add code to cache files for offline use.
         self.addEventListener('install', (event) => {
             console.log('Service Worker installing.');
+            self.skipWaiting();
+        });
+        self.addEventListener('activate', (event) => {
+            console.log('Service Worker activated.');
+            event.waitUntil(self.clients.claim());
         });
         self.addEventListener('fetch', (event) => {
-            // This is where you would add caching logic
+            // Placeholder for caching logic
         });
     </script>
 </body>
