@@ -1,0 +1,25 @@
+// This is the service worker file (sw.js).
+// It's a key part of making a PWA installable.
+
+// The `install` event is fired when the service worker is installed.
+// We can use this to pre-cache assets, though for this simple app, we just log a message.
+self.addEventListener('install', (event) => {
+    console.log('Service Worker installed.');
+    // Force the waiting service worker to become the active service worker
+    self.skipWaiting();
+});
+
+// The `activate` event is fired when the service worker becomes active.
+self.addEventListener('activate', (event) => {
+    console.log('Service Worker activated.');
+    // Ensure the new service worker takes over immediately
+    event.waitUntil(self.clients.claim());
+});
+
+// The `fetch` event is fired for every network request made by the page.
+// This is where you would add caching strategies for offline support.
+// For now, we just pass the request through.
+self.addEventListener('fetch', (event) => {
+    // You can add caching logic here to handle offline requests.
+    // For this app, we're not implementing offline caching.
+});
