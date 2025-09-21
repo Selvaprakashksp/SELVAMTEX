@@ -155,6 +155,7 @@
 
         // Firebase instances
         let app, db, auth, userId;
+        let isAuthReady = false;
         // Global variable to store current entries for download
         let currentEntries = [];
 
@@ -174,7 +175,10 @@
             // Check if Firebase config is provided and not empty
             try {
                 if (Object.keys(firebaseConfig).length === 0) {
-                    console.warn("Firebase configuration is not available. Firestore functionality will not work.");
+                    const message = "Firebase configuration is not available. Please make sure the app is running in a supported environment.";
+                    statusMessageEl.textContent = message;
+                    statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
+                    console.error(message);
                     return;
                 }
 
@@ -182,10 +186,16 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
+                statusMessageEl.textContent = "Authenticating, please wait...";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-yellow-500";
+
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         userId = user.uid;
+                        isAuthReady = true;
                         console.log("User authenticated with UID:", userId);
+                        statusMessageEl.textContent = "Authentication successful. You can now use the app.";
+                        statusMessageEl.className = "text-center text-sm font-medium mb-4 text-green-500";
                         // Start listening to the data after a successful authentication
                         startListeningForEntries(userId);
                     } else {
@@ -198,11 +208,15 @@
                             }
                         } catch (error) {
                             console.error("Authentication failed:", error);
+                            statusMessageEl.textContent = "Authentication failed. Please try again or check the console.";
+                            statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
                         }
                     }
                 });
             } catch (e) {
                 console.error("Error initializing Firebase:", e);
+                statusMessageEl.textContent = `Error initializing Firebase: ${e.message}`;
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
             }
         };
 
@@ -355,8 +369,8 @@
         timeForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            if (!userId) {
-                statusMessageEl.textContent = "User not authenticated. Please wait.";
+            if (!isAuthReady) {
+                statusMessageEl.textContent = "Authentication is not yet complete. Please wait a moment.";
                 statusMessageEl.className = "text-center text-sm font-medium mb-4 text-yellow-500";
                 return;
             }
@@ -409,8 +423,10 @@
 
         // Function to delete an entry
         async function deleteEntry(docId) {
-            if (!userId) {
+            if (!isAuthReady) {
                 console.error("Cannot delete, user not authenticated.");
+                statusMessageEl.textContent = "Authentication is not yet complete. Please wait a moment.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-yellow-500";
                 return;
             }
             const docPath = `artifacts/${appId}/users/${userId}/daily_entries_v2/${docId}`;
