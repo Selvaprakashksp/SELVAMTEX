@@ -46,15 +46,15 @@
             </div>
             <div>
                 <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input type="date" id="date" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                <input type="date" id="date" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
             </div>
             <div>
                 <label for="inTime" class="block text-sm font-medium text-gray-700 mb-1">In Time</label>
-                <input type="time" id="inTime" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                <input type="time" id="inTime" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
             </div>
             <div>
                 <label for="outTime" class="block text-sm font-medium text-gray-700 mb-1">Out Time</label>
-                <input type="time" id="outTime" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                <input type="time" id="outTime" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
             </div>
             <div>
                 <label for="bagsIn" class="block text-sm font-medium text-gray-700 mb-1">No. of Bags In</label>
@@ -140,9 +140,28 @@
         // Global variable to store current entries for download
         let currentEntries = [];
 
-        // Initialize Firebase on window load
+        // Initialize Firebase and set automatic date/time
         window.onload = async function() {
+            // Set current date and time
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+
+            dateInput.value = `${year}-${month}-${day}`;
+            inTimeInput.value = `${hours}:${minutes}`;
+            outTimeInput.value = `${hours}:${minutes}`;
+
+            // Check if Firebase config is provided and not empty
             try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.warn("Firebase configuration is not available. Firestore functionality will not work.");
+                    userIdEl.textContent = "App not connected to database. See console for details.";
+                    return;
+                }
+
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
@@ -273,13 +292,32 @@
                 return;
             }
 
+            // Custom validation for conditional fields
+            const bagsIn = parseInt(bagsInInput.value, 10);
+            const bagsOut = parseInt(bagsOutInput.value, 10);
+            const inTime = inTimeInput.value;
+            const outTime = outTimeInput.value;
+
+            if (bagsIn > 0 && !inTime) {
+                statusMessageEl.textContent = "Please enter an 'In Time' for bags received.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
+                inTimeInput.focus();
+                return;
+            }
+            if (bagsOut > 0 && !outTime) {
+                statusMessageEl.textContent = "Please enter an 'Out Time' for bags dispatched.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
+                outTimeInput.focus();
+                return;
+            }
+
             const newEntry = {
                 companyName: companyNameInput.value,
                 date: dateInput.value,
                 inTime: inTimeInput.value,
                 outTime: outTimeInput.value,
-                bagsIn: parseInt(bagsInInput.value, 10),
-                bagsOut: parseInt(bagsOutInput.value, 10),
+                bagsIn: bagsIn,
+                bagsOut: bagsOut,
                 color: colorInput.value,
                 count: parseInt(countInput.value, 10),
                 vehicleNumber: vehicleNumberInput.value,
@@ -293,7 +331,27 @@
                 console.log("Document written with ID: ", docRef.id);
                 statusMessageEl.textContent = "Entry saved successfully!";
                 statusMessageEl.className = "text-center text-sm font-medium mb-4 text-green-500";
-                timeForm.reset();
+                
+                // Clear inputs except for date and current time
+                companyNameInput.value = '';
+                bagsInInput.value = '0';
+                bagsOutInput.value = '0';
+                colorInput.value = '';
+                countInput.value = '0';
+                vehicleNumberInput.value = '';
+                driverPhoneInput.value = '';
+
+                // Set new date/time for next entry
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                dateInput.value = `${year}-${month}-${day}`;
+                inTimeInput.value = `${hours}:${minutes}`;
+                outTimeInput.value = `${hours}:${minutes}`;
+
             } catch (e) {
                 console.error("Error adding document: ", e);
                 statusMessageEl.textContent = "Error saving entry. See console.";
@@ -358,10 +416,12 @@
             statusMessageEl.className = "text-center text-sm font-medium mb-4 text-green-500";
         });
 
-        // Service Worker registration
+        // PWA Service Worker Registration
+        // Important: For GitHub Pages, the path must be relative to the root of the repository, not the root of the domain.
+        // We've updated the path to correctly point to the service worker file.
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js', { scope: './' }).then(registration => {
+                navigator.serviceWorker.register('/daily-tracker/sw.js', { scope: '/daily-tracker/' }).then(registration => {
                     console.log('Service Worker registered with scope:', registration.scope);
                 }).catch(error => {
                     console.log('Service Worker registration failed:', error);
