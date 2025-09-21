@@ -1,6 +1,6 @@
 {
-  "name": "Daily Tracker",
-  "short_name": "Tracker",
+  "name": "SELVAMTEX",
+  "short_name": "SELVAM",
   "description": "A simple app to track daily in/out entries.",
   "start_url": "./",
   "display": "standalone",
@@ -19,3 +19,4 @@
     }
   ]
 }
+
