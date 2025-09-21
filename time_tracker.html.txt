@@ -1,1 +1,383 @@
 <link rel="manifest" href="manifest.json">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Time Tracker</title>
+    <!-- PWA Manifest link -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 90%;
+        }
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main Application Container -->
+    <div class="container bg-white p-8 rounded-2xl shadow-xl w-full border border-gray-200">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-2">Daily In/Out Tracker</h1>
+        <p class="text-gray-500 text-center mb-6">Log your daily work details with ease.</p>
+
+        <!-- User ID Display -->
+        <div id="userIdContainer" class="bg-gray-100 p-4 rounded-xl mb-6 text-sm text-gray-700 break-all transition-all duration-300">
+            <p class="font-semibold text-gray-900 mb-1">Your User ID:</p>
+            <span id="userId" class="font-mono text-xs md:text-sm">Loading...</span>
+        </div>
+
+        <!-- Time Entry Form -->
+        <form id="timeForm" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            <div class="md:col-span-3">
+                <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                <input type="text" id="companyName" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., ABC Logistics">
+            </div>
+            <div>
+                <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                <input type="date" id="date" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+            </div>
+            <div>
+                <label for="inTime" class="block text-sm font-medium text-gray-700 mb-1">In Time</label>
+                <input type="time" id="inTime" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+            </div>
+            <div>
+                <label for="outTime" class="block text-sm font-medium text-gray-700 mb-1">Out Time</label>
+                <input type="time" id="outTime" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+            </div>
+            <div>
+                <label for="bagsIn" class="block text-sm font-medium text-gray-700 mb-1">No. of Bags In</label>
+                <input type="number" id="bagsIn" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., 50">
+            </div>
+            <div>
+                <label for="bagsOut" class="block text-sm font-medium text-gray-700 mb-1">No. of Bags Out</label>
+                <input type="number" id="bagsOut" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., 45">
+            </div>
+            <div>
+                <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                <input type="text" id="color" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., Blue">
+            </div>
+            <div>
+                <label for="count" class="block text-sm font-medium text-gray-700 mb-1">Count</label>
+                <input type="number" id="count" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., 200">
+            </div>
+            <div>
+                <label for="vehicleNumber" class="block text-sm font-medium text-gray-700 mb-1">Vehicle Number</label>
+                <input type="text" id="vehicleNumber" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., AB-12-CD-3456">
+            </div>
+            <div>
+                <label for="driverPhone" class="block text-sm font-medium text-gray-700 mb-1">Driver Phone Number</label>
+                <input type="tel" id="driverPhone" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="e.g., +1234567890">
+            </div>
+
+            <div class="md:col-span-3 mt-4 flex justify-between gap-4">
+                <button type="submit" id="saveBtn" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all transform hover:scale-105">
+                    Save Entry
+                </button>
+                <button type="button" id="downloadBtn" class="w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition-all transform hover:scale-105">
+                    Download as Excel
+                </button>
+            </div>
+        </form>
+
+        <div id="statusMessage" class="text-center text-sm font-medium mb-4"></div>
+
+        <!-- Logged Entries List -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Your Entries</h2>
+        <div id="entriesList" class="space-y-4">
+            <!-- Entries will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- SheetJS Library for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Set Firebase debug logs
+        setLogLevel('debug');
+
+        // Global variables provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // HTML element references
+        const userIdEl = document.getElementById('userId');
+        const timeForm = document.getElementById('timeForm');
+        const companyNameInput = document.getElementById('companyName');
+        const dateInput = document.getElementById('date');
+        const inTimeInput = document.getElementById('inTime');
+        const outTimeInput = document.getElementById('outTime');
+        const bagsInInput = document.getElementById('bagsIn');
+        const bagsOutInput = document.getElementById('bagsOut');
+        const colorInput = document.getElementById('color');
+        const countInput = document.getElementById('count');
+        const vehicleNumberInput = document.getElementById('vehicleNumber');
+        const driverPhoneInput = document.getElementById('driverPhone');
+        const entriesList = document.getElementById('entriesList');
+        const statusMessageEl = document.getElementById('statusMessage');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Firebase instances
+        let app, db, auth, userId;
+        // Global variable to store current entries for download
+        let currentEntries = [];
+
+        // Initialize Firebase on window load
+        window.onload = async function() {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        userIdEl.textContent = userId;
+                        console.log("User authenticated with UID:", userId);
+                        // Start listening to the data after a successful authentication
+                        startListeningForEntries(userId);
+                    } else {
+                        console.log("No user signed in. Attempting anonymous sign-in.");
+                        try {
+                            if (initialAuthToken) {
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                        } catch (error) {
+                            console.error("Authentication failed:", error);
+                            userIdEl.textContent = "Authentication failed. See console.";
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error("Error initializing Firebase:", e);
+                userIdEl.textContent = "Error loading app. Check console.";
+            }
+        };
+
+        // Function to listen for real-time updates from Firestore
+        function startListeningForEntries(currentUserId) {
+            const collectionPath = `artifacts/${appId}/users/${currentUserId}/daily_entries`;
+            const userEntriesCollection = collection(db, collectionPath);
+            
+            // Using onSnapshot to listen for real-time changes
+            onSnapshot(userEntriesCollection, (querySnapshot) => {
+                const entries = [];
+                querySnapshot.forEach((doc) => {
+                    // Get data and store document ID
+                    entries.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sort entries by date and time in descending order (most recent first)
+                entries.sort((a, b) => {
+                    const dateA = new Date(`${a.date}T${a.inTime}`);
+                    const dateB = new Date(`${b.date}T${b.inTime}`);
+                    return dateB - dateA;
+                });
+
+                currentEntries = entries; // Update the global variable
+                renderEntries(entries);
+            }, (error) => {
+                console.error("Error listening to collection:", error);
+                statusMessageEl.textContent = "Error loading entries. See console.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
+            });
+        }
+
+        // Function to render entries on the page
+        function renderEntries(entries) {
+            entriesList.innerHTML = '';
+            if (entries.length === 0) {
+                entriesList.innerHTML = '<p class="text-center text-gray-500 py-8">No entries yet. Add your first one above!</p>';
+                return;
+            }
+
+            entries.forEach(entry => {
+                const entryEl = document.createElement('div');
+                entryEl.className = "bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center flex-wrap gap-2";
+                
+                // Format times and calculate total time
+                const [inHours, inMinutes] = (entry.inTime || '00:00').split(':').map(Number);
+                const [outHours, outMinutes] = (entry.outTime || '00:00').split(':').map(Number);
+                const totalMinutes = (outHours * 60 + outMinutes) - (inHours * 60 + inMinutes);
+                const totalHours = Math.floor(totalMinutes / 60);
+                const remainingMinutes = totalMinutes % 60;
+                const totalTimeStr = totalMinutes >= 0 ? `${totalHours}h ${remainingMinutes}m` : 'Invalid Time';
+
+                entryEl.innerHTML = `
+                    <div class="flex-grow">
+                        <p class="text-xl font-bold text-gray-800">${entry.companyName || 'N/A'}</p>
+                        <p class="text-sm text-gray-600 mb-2">${entry.date || 'N/A'}</p>
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-gray-700">
+                            <div><strong>Bags In:</strong> ${entry.bagsIn || 0}</div>
+                            <div><strong>Bags Out:</strong> ${entry.bagsOut || 0}</div>
+                            <div><strong>Color:</strong> ${entry.color || 'N/A'}</div>
+                            <div><strong>Count:</strong> ${entry.count || 0}</div>
+                            <div><strong>Vehicle:</strong> ${entry.vehicleNumber || 'N/A'}</div>
+                            <div><strong>Driver #:</strong> ${entry.driverPhone || 'N/A'}</div>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 flex flex-col items-end sm:items-center">
+                        <p class="text-xs text-gray-500">Total Time</p>
+                        <p class="text-2xl font-bold text-gray-800 mb-2">${totalTimeStr}</p>
+                        <div class="flex gap-2 items-center">
+                            <span class="text-green-600 font-medium text-xs md:text-sm">IN: ${entry.inTime || 'N/A'}</span>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-red-600 font-medium text-xs md:text-sm">OUT: ${entry.outTime || 'N/A'}</span>
+                        </div>
+                        <button class="delete-btn mt-2 text-gray-400 hover:text-red-500 transition-colors" data-id="${entry.id}" title="Delete entry">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 11-2 0v6a1 1 0 112 0V8z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                entriesList.appendChild(entryEl);
+            });
+
+            // Attach event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const docId = e.currentTarget.dataset.id;
+                    await deleteEntry(docId);
+                });
+            });
+        }
+
+        // Function to save a new time entry
+        timeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!userId) {
+                statusMessageEl.textContent = "User not authenticated. Please wait.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-yellow-500";
+                return;
+            }
+
+            const newEntry = {
+                companyName: companyNameInput.value,
+                date: dateInput.value,
+                inTime: inTimeInput.value,
+                outTime: outTimeInput.value,
+                bagsIn: parseInt(bagsInInput.value, 10),
+                bagsOut: parseInt(bagsOutInput.value, 10),
+                color: colorInput.value,
+                count: parseInt(countInput.value, 10),
+                vehicleNumber: vehicleNumberInput.value,
+                driverPhone: driverPhoneInput.value,
+                timestamp: new Date().toISOString(),
+            };
+
+            const collectionPath = `artifacts/${appId}/users/${userId}/daily_entries`;
+            try {
+                const docRef = await addDoc(collection(db, collectionPath), newEntry);
+                console.log("Document written with ID: ", docRef.id);
+                statusMessageEl.textContent = "Entry saved successfully!";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-green-500";
+                timeForm.reset();
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                statusMessageEl.textContent = "Error saving entry. See console.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
+            }
+        });
+
+        // Function to delete an entry
+        async function deleteEntry(docId) {
+            if (!userId) {
+                console.error("Cannot delete, user not authenticated.");
+                return;
+            }
+            const docPath = `artifacts/${appId}/users/${userId}/daily_entries/${docId}`;
+            try {
+                await deleteDoc(doc(db, docPath));
+                console.log("Document successfully deleted!");
+                statusMessageEl.textContent = "Entry deleted.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-green-500";
+            } catch (error) {
+                console.error("Error removing document: ", error);
+                statusMessageEl.textContent = "Error deleting entry. See console.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-red-500";
+            }
+        }
+
+        // Function to download data as Excel
+        downloadBtn.addEventListener('click', () => {
+            if (currentEntries.length === 0) {
+                statusMessageEl.textContent = "No data to download.";
+                statusMessageEl.className = "text-center text-sm font-medium mb-4 text-yellow-500";
+                return;
+            }
+
+            // Map data to a new array with desired headers and format
+            const dataToExport = currentEntries.map(entry => ({
+                'DATE': entry.date,
+                'COMPANY NAME': entry.companyName,
+                'NO OF BAGS IN': entry.bagsIn,
+                'NO OF BAGS OUT': entry.bagsOut,
+                'COLOR': entry.color,
+                'COUNT': entry.count,
+                'VEHICLE NUMBER': entry.vehicleNumber,
+                'DRIVER PHONE NUMBER': entry.driverPhone,
+                'IN TIME': entry.inTime,
+                'OUT TIME': entry.outTime,
+            }));
+
+            // Create a new workbook and add a worksheet
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Daily Entries");
+            
+            // Generate a filename with the current date
+            const dateStr = new Date().toISOString().slice(0,10);
+            const filename = `daily_entries_${dateStr}.xlsx`;
+
+            // Write the workbook and trigger the download
+            XLSX.writeFile(workbook, filename);
+
+            statusMessageEl.textContent = "Excel file generated and downloaded!";
+            statusMessageEl.className = "text-center text-sm font-medium mb-4 text-green-500";
+        });
+
+        // Service Worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js', { scope: './' }).then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }).catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+            });
+        }
+    </script>
+    <script>
+        // A minimal service worker script to enable PWA installation
+        // For a full app, you would add code to cache files for offline use.
+        self.addEventListener('install', (event) => {
+            console.log('Service Worker installing.');
+        });
+        self.addEventListener('fetch', (event) => {
+            // This is where you would add caching logic
+        });
+    </script>
+</body>
+</html>
