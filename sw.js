@@ -23,3 +23,4 @@ self.addEventListener('fetch', (event) => {
     // You can add caching logic here to handle offline requests.
     // For this app, we're not implementing offline caching.
 });
+
